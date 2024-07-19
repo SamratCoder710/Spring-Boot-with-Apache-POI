@@ -1,18 +1,14 @@
 package com.tcs.controller;
 
-import java.util.List;
-
+import com.tcs.entity.ProductEntity;
+import com.tcs.service.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.tcs.entity.ProductEntity;
-import com.tcs.service.IProductService;
+import java.util.List;
 @RestController
 @RequestMapping(value = { "/products" })
 public class ProductController {
@@ -34,6 +30,17 @@ public class ProductController {
 	public List<ProductEntity> getAllProducts() {
 		List<ProductEntity> tasks = service.getProducts();
 		return tasks;
+
+	}
+
+	@PostMapping("/add")
+	public ResponseEntity<ProductEntity> addProductToExcel(@RequestBody ProductEntity product){
+		try {
+			ProductEntity addedProduct = service.writeEntryToExcel(product);
+			return new ResponseEntity<>(addedProduct,HttpStatus.CREATED);
+		}catch(Exception e){
+			return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+		}
 
 	}
 }
